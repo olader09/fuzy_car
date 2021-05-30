@@ -50,8 +50,6 @@ public class CarController : MonoBehaviour
 	[SerializeField]
 	Transform LeftCenterSensor;
 	[SerializeField]
-	Transform CenterSensor;
-	[SerializeField]
 	Transform RightCenterSensor;
 	[SerializeField]
 	Transform RightSensor;
@@ -61,8 +59,6 @@ public class CarController : MonoBehaviour
 	LineRenderer LeftRenderer;
 	[SerializeField]
 	LineRenderer LeftCenterRenderer;
-	[SerializeField]
-	LineRenderer CenterRenderer;
 	[SerializeField]
 	LineRenderer RightCenterRenderer;
 	[SerializeField]
@@ -135,18 +131,18 @@ public class CarController : MonoBehaviour
         speed = 0;
     }
 
-    private float[] AI(float l, float lc, float c, float rc, float r)
+    private float[] AI(float l, float lc, float rc, float r)
     {
         float[] res = new float[2];
         res[0] = 0;
         res[1] = 1;
         float rk = (1 -l / MaxSensorNum) + (1- lc / MaxSensorNum); //коэф поворота направо
         float lk = (1 - r / MaxSensorNum) + (1 - rc / MaxSensorNum); //коэф поворота налево
-        float ck = Math.Min(Math.Min(c / MaxSensorNum, lc / MaxSensorNum), rc / MaxSensorNum) *(1 - speed/maxSpeed); // коэф разгона
+        float ck = Math.Min(lc / MaxSensorNum, rc / MaxSensorNum) *(1 - speed/maxSpeed); // коэф разгона
         if (ck < (float)0.1)
             ck = 0;
 
-        if (l < MaxSensorNum || r < MaxSensorNum || lc < MaxSensorNum || rc < MaxSensorNum || c < MaxSensorNum)
+        if (l < MaxSensorNum || r < MaxSensorNum || lc < MaxSensorNum || rc < MaxSensorNum)
         {
             res[0] += rk > lk ? rk: -lk; // какой кэф больше , туда и поворачиваем
             res[1] *= ck ;
@@ -171,8 +167,8 @@ public class CarController : MonoBehaviour
 	{
         if (pause) return;
         //Входные параметры Input (от -1 до 1) их заменить на данные с экспертной системы (а пока можно стрелками управлять)
-        steeringAmount = -1 * AI(LeftSensorNum, LeftCenterSensorNum, CenterSensorNum, RightCenterSensorNum , RightSensorNum)[0];
-        acc = AI(LeftSensorNum, LeftCenterSensorNum, CenterSensorNum, RightCenterSensorNum, RightSensorNum)[1];
+        steeringAmount = -1 * AI(LeftSensorNum, LeftCenterSensorNum, RightCenterSensorNum , RightSensorNum)[0];
+        acc = AI(LeftSensorNum, LeftCenterSensorNum, RightCenterSensorNum, RightSensorNum)[1];
 		//Автоматически жмём на тормоз
 		if (acc == 0 && speed != 0)
 			acc = -1;
@@ -243,30 +239,6 @@ public class CarController : MonoBehaviour
 		{
 			LeftCenterRenderer.enabled = false;
 			LeftCenterSensorNum = MaxSensorNum;
-		}
-
-		//Центральный сенсор
-		RaycastHit2D hitCenter = Physics2D.Raycast(CenterSensor.position, CenterSensor.up, MaxSensorNum);
-		if (hitCenter.collider != null)
-		{
-				if (hitCenter.collider.tag != "finish")
-				{
-					CenterSensorNum = hitCenter.distance;
-					CenterRenderer.enabled = true;
-					CenterRenderer.SetVertexCount(2);
-					CenterRenderer.SetPosition(0, CenterSensor.position);
-					CenterRenderer.SetPosition(1, hitCenter.point);
-				}
-			else
-			{
-				CenterRenderer.enabled = false;
-				CenterSensorNum = MaxSensorNum;
-			}
-		}
-		else
-		{
-			CenterRenderer.enabled = false;
-			CenterSensorNum = MaxSensorNum;
 		}
 
 		//Правый сенсор спереди
