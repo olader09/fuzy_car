@@ -115,6 +115,28 @@ public class CarController : MonoBehaviour
         InputSpeed.text = maxSpeed.ToString();
     }
 
+	public void LRotate()
+	{
+		if (pause == true){
+			rb = GetComponent<Rigidbody2D>();
+			rb.rotation += 10;
+		}
+		else {
+			return ;
+		}
+    }
+
+	public void RRotate()
+	{
+		if (pause == true){
+			rb = GetComponent<Rigidbody2D>();
+			rb.rotation -= 10;
+		}
+		else {
+			return ;
+		}
+    }
+
     // Use this for initialization
     void Start()
 	{
