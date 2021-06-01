@@ -53,28 +53,19 @@ public class Drawing : MonoBehaviour
         {
             if (Input.GetMouseButton(0))
             {
-                //Get position of the mouseclick
                 Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 //Convert position of the mouseclick to the position of the tile located at the mouseclick
                 Vector3Int coordinate = tilemap.WorldToCell(pos);
-                //Display tile position in log
-                //Debug.Log(coordinate);
-
                 tilemap.SetTile(coordinate, newTile);
-
             }
         }
         else
         {
             if (Input.GetMouseButton(0))
             {
-                //Get position of the mouseclick
                 Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 //Convert position of the mouseclick to the position of the tile located at the mouseclick
                 Vector3Int coordinate = tilemap.WorldToCell(pos);
-                //Display tile position in log
-                //Debug.Log(coordinate);
-
                 tilemap.SetTile(coordinate, null);
 
             }
